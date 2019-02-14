@@ -240,3 +240,5 @@ def draw_gpx_map(file):
     print('Created test map for', file)
 
 draw_gpx_map('test1.gpx')
+draw_gpx_map('test2.gpx')
+draw_gpx_map('test3.gpx')
