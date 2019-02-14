@@ -63,7 +63,7 @@ Zn = Z[0]
 Zyn = Zy[0]
 
 print()
-print('Origin - Xn=%i, Yn=%i, Zn=%i, Zyn=%i' % (Xn, Yn, Zn, Zyn))
+print('Origin - Xn=%s, Yn=%s, Zn=%s, Zyn=%s' % (Xn, Yn, Zn, Zyn))
 print()
 
 factor = 1000
