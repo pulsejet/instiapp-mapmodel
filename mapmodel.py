@@ -9,6 +9,7 @@ For a copy, see <https://opensource.org/licenses/MIT>.
 import math
 import numpy as np
 from PIL import Image, ImageDraw
+import gpxpy
 
 # Raw data points
 locs = [
@@ -149,6 +150,8 @@ UPPER_RIGHT = (19.139488, 72.920125)
 DIVISIONS_H = 20;
 DIVISIONS_V = 20;
 
+TEST_PATH_COLOR = (255, 0, 0, 255)
+
 # Open and load markers
 blue_marker = Image.open(open(BLUE_MARKER_FILE, 'rb'))
 blue_marker.thumbnail(MARKER_SIZE, Image.ANTIALIAS)
@@ -214,3 +217,26 @@ im.thumbnail(MAP_SIZE, Image.ANTIALIAS)
 im.save('docs/modelcontours.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
 print('Created contour map')
 
+# Draw test GPX path
+def draw_gpx_map(file):
+    gpx_file = open(file, 'r')
+    gpx = gpxpy.parse(gpx_file)
+
+    im = Image.open(open(MAP_FILE, 'rb'))
+    draw = ImageDraw.Draw(im)
+
+    for track in gpx.tracks:
+        for segment in track.segments:
+            for i in range(len(segment.points) - 1):
+                p1 = segment.points[i]
+                p2 = segment.points[i + 1]
+                pred1 = c(p1.latitude, p1.longitude)
+                pred2 = c(p2.latitude, p2.longitude)
+                draw.line((pred1[0], pred1[1], pred2[0], pred2[1]), fill=TEST_PATH_COLOR, width=8)
+
+    del draw
+    im.thumbnail(MAP_SIZE, Image.ANTIALIAS)
+    im.save('docs/%s.jpg' % file, 'JPEG', quality=90, optimize=True, progressive=True)
+    print('Created test map for', file)
+
+draw_gpx_map('test1.gpx')
