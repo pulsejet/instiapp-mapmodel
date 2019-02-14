@@ -1,6 +1,8 @@
 # InstiApp Map Model
 Map model for GPS in InstiMap.
 
+[![InstiApp](https://insti.app/instiapp-badge-gh.svg)](https://insti.app)
+
 ## Usage
 Install requirements and run `mapmodel.py`.
 
