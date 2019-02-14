@@ -43,6 +43,7 @@ locs = [
     (19.128468, 72.917833, 3401, 2767, "C7 intersection"),
     (19.132843, 72.915994, 3783, 1727, "Main building intersection"),
     (19.134365, 72.915378, 3933, 1447, "Library intersection"),
+    (19.124783, 72.908800, 659, 2380, "Padmavati temple intersection"),
 ]
 
 # Unzip
