@@ -137,8 +137,17 @@ MAP_FILE = 'map.jpg'
 BLUE_MARKER_FILE = 'marker_blue_s.png'
 RED_MARKER_FILE = 'marker_red_s.png'
 MARKER_SIZE = 200, 200
+MAP_SIZE = (1500, 1500)
+
 ERROR_COLOR = (0, 0, 255, 255)
 ERROR_COLOR_VALID = (255, 0, 0, 255)
+
+CONST_LAT_COLOR = (255, 255, 0, 255)
+CONST_LNG_COLOR = (255, 0, 0, 255)
+LOWER_LEFT = (19.121891, 72.894558)
+UPPER_RIGHT = (19.139488, 72.920125)
+DIVISIONS_H = 20;
+DIVISIONS_V = 20;
 
 # Open and load markers
 blue_marker = Image.open(open(BLUE_MARKER_FILE, 'rb'))
@@ -154,7 +163,7 @@ for x in valid:
     im.paste(red_marker, conv_mark((x[2], x[3])), red_marker)
 for x in locs:
     im.paste(blue_marker, conv_mark((x[2], x[3])), blue_marker)
-im.thumbnail((1500, 1500), Image.ANTIALIAS)
+im.thumbnail(MAP_SIZE, Image.ANTIALIAS)
 im.save('modelmap.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
 print('Created model map')
 
@@ -168,5 +177,40 @@ for x in valid:
     pred = c(x[0], x[1])
     draw.line((x[2], x[3], pred[0], pred[1]), fill=ERROR_COLOR_VALID, width=8)
 del draw
+im.thumbnail(MAP_SIZE, Image.ANTIALIAS)
 im.save('modelerror.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
 print('Created model error map')
+
+# Create contours
+im = Image.open(open(MAP_FILE, 'rb'))
+draw = ImageDraw.Draw(im)
+
+# Size of one div
+DIV_H = (UPPER_RIGHT[0] - LOWER_LEFT[0]) / DIVISIONS_H
+DIV_V = (UPPER_RIGHT[1] - LOWER_LEFT[1]) / DIVISIONS_V
+
+# Draw for constant latitude
+for x in range(DIVISIONS_H):
+    for y in range(DIVISIONS_V):
+        lat = LOWER_LEFT[0] + x * DIV_H
+        lng1 = LOWER_LEFT[1] + y * DIV_V
+        lng2 = LOWER_LEFT[1] + (y + 1) * DIV_V
+        pred1 = c(lat, lng1)
+        pred2 = c(lat, lng2)
+        draw.line((pred1[0], pred1[1], pred2[0], pred2[1]), fill=CONST_LAT_COLOR, width=5)
+
+# Draw for constant longitude
+for y in range(DIVISIONS_V):
+    for x in range(DIVISIONS_H):
+        lng = LOWER_LEFT[1] + y * DIV_V
+        lat1 = LOWER_LEFT[0] + x * DIV_H
+        lat2 = LOWER_LEFT[0] + (x + 1) * DIV_H
+        pred1 = c(lat1, lng)
+        pred2 = c(lat2, lng)
+        draw.line((pred1[0], pred1[1], pred2[0], pred2[1]), fill=CONST_LNG_COLOR, width=5)
+        
+del draw
+im.thumbnail(MAP_SIZE, Image.ANTIALIAS)
+im.save('modelcontours.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
+print('Created contour map')
+
