@@ -243,3 +243,4 @@ def draw_gpx_map(file):
 draw_gpx_map('test1.gpx')
 draw_gpx_map('test2.gpx')
 draw_gpx_map('test3.gpx')
+draw_gpx_map('test4.gpx')
