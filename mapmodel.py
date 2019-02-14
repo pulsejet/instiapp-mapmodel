@@ -103,6 +103,41 @@ def c(x, y):
     pixel_y = Zyn + A[0] + A[1]*x + A[2]*y + A[3]*x**2 + A[4]*x**2*y + A[5]*x**2*y**2 + A[6]*y**2 + A[7]*x*y**2 + A[8]*x*y
     return pixel_x, pixel_y
 
+loss = 0
+def addloss(x, y, pixel_x, pixel_y, name):
+    global loss
+    
+    # Add and print loss
+    x, y = c(x, y)
+    closs = np.round(math.sqrt((x - pixel_x)**2 + (y - pixel_y)**2), 2)
+    print(name, closs)
+    loss += closs
+
+print("TRAINING LOSS")
+for x in locs:
+    addloss(*x)
+print("TOTAL", np.round(loss, 2))
+print()
+
+# Do some validation
+loss = 0
+print("VALIDATION LOSS")
+valid = [
+    (19.132018, 72.918015, 4167, 2055, "VMCC lower"),
+    (19.134360, 72.915061, 3841, 1429, "Library"),
+    (19.133483, 72.912373, 3103, 1361, "H11"),
+    (19.138056, 72.916654, 4685, 1047, "Aravali?"),
+    (19.128764, 72.915857, 2947, 2432, "H10"),
+]
+for x in valid:
+    addloss(*x)
+print("TOTAL", np.round(loss, 2))
+print()
+
+# ===================================================================
+# Make beautiful assets
+# ===================================================================
+
 # Open and load map images
 image = Image.open(open(MAP_FILE, 'rb'))
 blue_marker = Image.open(open(BLUE_MARKER_FILE, 'rb'))
@@ -112,39 +147,9 @@ red_marker.thumbnail(MARKER_SIZE, Image.ANTIALIAS)
 marker_width, marker_height = blue_marker.size
 conv_mark = lambda coords: (coords[0] - (marker_width // 2), coords[1] - (marker_height))
 
-loss = 0
-def addloss(x, y, pixel_x, pixel_y, name, addmarker=True):
-    global loss
-    
-    # Add and print loss
-    x, y = c(x, y)
-    closs = np.round(math.sqrt((x - pixel_x)**2 + (y - pixel_y)**2), 2)
-    print(name, closs)
-    loss += closs
-
-    # Add red marker
-    if addmarker:
-        image.paste(red_marker, conv_mark((pixel_x, pixel_y)), red_marker)
-
-print("TRAINING LOSS")
-for x in locs:
-    addloss(*x, addmarker=False)
-print("TOTAL", np.round(loss, 2))
-print()
-
-loss = 0
-print("VALIDATION LOSS")
-# Do some validation
-addloss(19.132018, 72.918015, 4167, 2055, "VMCC lower")
-addloss(19.134360, 72.915061, 3841, 1429, "Library")
-addloss(19.133483, 72.912373, 3103, 1361, "H11")
-addloss(19.138056, 72.916654, 4685, 1047, "Aravali?")
-addloss(19.128764, 72.915857, 2947, 2432, "H10")
-
-print("TOTAL", np.round(loss, 2))
-print()
-
-# Make the map
+for x in valid:
+    image.paste(red_marker, conv_mark((x[2], x[3])), red_marker)
 for x in locs:
     image.paste(blue_marker, conv_mark((x[2], x[3])), blue_marker)
+
 image.save('modelmap.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
