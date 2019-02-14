@@ -1,7 +1,9 @@
 # InstiApp Map Model
 Map model for GPS in InstiMap.
 
-[![InstiApp](https://insti.app/instiapp-badge-gh.svg)](https://insti.app)
+[![InstiApp](https://insti.app/instiapp-badge-gh.svg)](https://insti.app/map)
+[![Results](https://img.shields.io/badge/results-online-blueviolet.svg)](https://pulsejet.github.io/instiapp-mapmodel/)
+[![License](https://img.shields.io/github/license/pulsejet/instiapp-mapmodel.svg?style=flat)](https://github.com/pulsejet/instiapp-mapmodel/blob/master/LICENSE.md)
 
 ## Usage
 Install requirements and run `mapmodel.py`.
