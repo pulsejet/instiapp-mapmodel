@@ -164,7 +164,7 @@ for x in valid:
 for x in locs:
     im.paste(blue_marker, conv_mark((x[2], x[3])), blue_marker)
 im.thumbnail(MAP_SIZE, Image.ANTIALIAS)
-im.save('modelmap.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
+im.save('docs/modelmap.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
 print('Created model map')
 
 # Create model error
@@ -178,7 +178,7 @@ for x in valid:
     draw.line((x[2], x[3], pred[0], pred[1]), fill=ERROR_COLOR_VALID, width=8)
 del draw
 im.thumbnail(MAP_SIZE, Image.ANTIALIAS)
-im.save('modelerror.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
+im.save('docs/modelerror.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
 print('Created model error map')
 
 # Create contours
@@ -211,6 +211,6 @@ for y in range(DIVISIONS_V):
         
 del draw
 im.thumbnail(MAP_SIZE, Image.ANTIALIAS)
-im.save('modelcontours.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
+im.save('docs/modelcontours.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
 print('Created contour map')
 
