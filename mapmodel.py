@@ -8,13 +8,7 @@ For a copy, see <https://opensource.org/licenses/MIT>.
 
 import math
 import numpy as np
-from PIL import Image
-
-# Path and constants of map files
-MAP_FILE = 'map.jpg'
-BLUE_MARKER_FILE = 'marker_blue_s.png'
-RED_MARKER_FILE = 'marker_red_s.png'
-MARKER_SIZE = 200, 200
+from PIL import Image, ImageDraw
 
 # Raw data points
 locs = [
@@ -138,8 +132,15 @@ print()
 # Make beautiful assets
 # ===================================================================
 
-# Open and load map images
-image = Image.open(open(MAP_FILE, 'rb'))
+# Path and constants of map files
+MAP_FILE = 'map.jpg'
+BLUE_MARKER_FILE = 'marker_blue_s.png'
+RED_MARKER_FILE = 'marker_red_s.png'
+MARKER_SIZE = 200, 200
+ERROR_COLOR = (0, 0, 255, 255)
+ERROR_COLOR_VALID = (255, 0, 0, 255)
+
+# Open and load markers
 blue_marker = Image.open(open(BLUE_MARKER_FILE, 'rb'))
 blue_marker.thumbnail(MARKER_SIZE, Image.ANTIALIAS)
 red_marker = Image.open(open(RED_MARKER_FILE, 'rb'))
@@ -147,10 +148,25 @@ red_marker.thumbnail(MARKER_SIZE, Image.ANTIALIAS)
 marker_width, marker_height = blue_marker.size
 conv_mark = lambda coords: (coords[0] - (marker_width // 2), coords[1] - (marker_height))
 
+# Create model map
+im = Image.open(open(MAP_FILE, 'rb'))
 for x in valid:
-    image.paste(red_marker, conv_mark((x[2], x[3])), red_marker)
+    im.paste(red_marker, conv_mark((x[2], x[3])), red_marker)
 for x in locs:
-    image.paste(blue_marker, conv_mark((x[2], x[3])), blue_marker)
+    im.paste(blue_marker, conv_mark((x[2], x[3])), blue_marker)
+im.thumbnail((1500, 1500), Image.ANTIALIAS)
+im.save('modelmap.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
+print('Created model map')
 
-image.thumbnail((1500, 1500), Image.ANTIALIAS)
-image.save('modelmap.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
+# Create model error
+im = Image.open(open(MAP_FILE, 'rb'))
+draw = ImageDraw.Draw(im)
+for x in locs:
+    pred = c(x[0], x[1])
+    draw.line((x[2], x[3], pred[0], pred[1]), fill=ERROR_COLOR, width=8)
+for x in valid:
+    pred = c(x[0], x[1])
+    draw.line((x[2], x[3], pred[0], pred[1]), fill=ERROR_COLOR_VALID, width=8)
+del draw
+im.save('modelerror.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
+print('Created model error map')
