@@ -152,4 +152,5 @@ for x in valid:
 for x in locs:
     image.paste(blue_marker, conv_mark((x[2], x[3])), blue_marker)
 
+image.thumbnail((1500, 1500), Image.ANTIALIAS)
 image.save('modelmap.jpg', 'JPEG', quality=90, optimize=True, progressive=True)
